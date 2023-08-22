@@ -1,0 +1,1 @@
+[22-Aug-2023 15:09:56 UTC] PHP Fatal error:  Cannot redeclare App\Providers\Filament\AdminPanelProvider::panel() in /home/wsplsdkk/wspf.wsplataform.com/app/Providers/Filament/AdminPanelProvider.php on line 58
