@@ -2,9 +2,9 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\PaisResource\Pages;
-use App\Filament\Resources\PaisResource\RelationManagers;
-use App\Models\Pais;
+use App\Filament\Resources\DepartamentoResource\Pages;
+use App\Filament\Resources\DepartamentoResource\RelationManagers;
+use App\Models\Departamento;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -13,33 +13,30 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
-use Filament\Support\Enums\IconPosition;
-use Filament\Support\Enums\FontWeight;
 
-class PaisResource extends Resource
+class DepartamentoResource extends Resource
 {
-    protected static ?string $model = Pais::class;
+    protected static ?string $model = Departamento::class;
 
-    protected static ?string $modelLabel ='País';
+    protected static ?string $modelLabel ='Departamento';
     protected static ?string $navigationGroup = 'Maestros';
-    protected static ?string $navigationIcon = 'feathericon-flag';
-    protected static ?string $navigationLabel = 'Países';
+    protected static ?string $navigationIcon = 'feathericon-map';
+    protected static ?string $navigationLabel = 'Departamentos';
     protected static ?int $navigationSort = 2;
-    protected static ?string $pluralModelLabel ='Países';
+    protected static ?string $pluralModelLabel ='Departamentos';
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
+                Forms\Components\TextInput::make('pais_id')
+                    ->required()
+                    ->numeric(),
                 Forms\Components\TextInput::make('user_id')
                     ->required()
                     ->numeric(),
                 Forms\Components\TextInput::make('nombre')
                     ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('abreviatura')
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('id_int_call')
                     ->maxLength(255),
                 Forms\Components\Toggle::make('estado')
                     ->required(),
@@ -50,21 +47,11 @@ class PaisResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('nombre')->label('País')
-                    ->sortable()
-                    ->copyable()
-                    ->copyMessage('Nombre copiado')
-                    ->copyMessageDuration(1500)
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('abreviatura')
-                    ->searchable()
-                    ->sortable()
-                    ->color('primary')
-                    ->icon('heroicon-m-flag')
-                    //->iconPosition(IconPosition::After)
-                    ->weight(FontWeight::Bold),
-                Tables\Columns\TextColumn::make('id_int_call')->label('Código Llamadas')
-                    ->sortable()
+                Tables\Columns\TextColumn::make('pais.nombre')
+                    ->numeric()
+                    ->sortable()->label('País'),                
+                Tables\Columns\TextColumn::make('nombre')->label('Departamento')
+                    ->sortable()    
                     ->searchable(),
                 Tables\Columns\IconColumn::make('estado')
                     ->sortable()
@@ -79,8 +66,6 @@ class PaisResource extends Resource
             ->actions([
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
-                /* These lines of code are defining the actions that can be performed on each record in
-                the table. */
                 Tables\Actions\DeleteAction::make(),
                 Tables\Actions\ForceDeleteAction::make(),
                 Tables\Actions\RestoreAction::make(),
@@ -101,15 +86,15 @@ class PaisResource extends Resource
         return [
             //
         ];
-    }
+    }      
     
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListPais::route('/'),
-            'create' => Pages\CreatePais::route('/create'),
-            'view' => Pages\ViewPais::route('/{record}'),
-            'edit' => Pages\EditPais::route('/{record}/edit'),
+            'index' => Pages\ListDepartamentos::route('/'),
+            'create' => Pages\CreateDepartamento::route('/create'),
+            'view' => Pages\ViewDepartamento::route('/{record}'),
+            'edit' => Pages\EditDepartamento::route('/{record}/edit'),
         ];
     }    
 }
