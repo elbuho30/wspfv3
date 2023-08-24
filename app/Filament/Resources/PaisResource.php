@@ -15,6 +15,7 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
 use Filament\Support\Enums\IconPosition;
 use Filament\Support\Enums\FontWeight;
+use Filament\Tables\Actions\ReplicateAction;
 
 class PaisResource extends Resource
 {
@@ -77,13 +78,18 @@ class PaisResource extends Resource
                 //
             ])
             ->actions([
+                Tables\Actions\ActionGroup::make([
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
                 /* These lines of code are defining the actions that can be performed on each record in
                 the table. */
+                ReplicateAction::make()->label('Clonar')->successNotificationTitle('Registro clonado'),
                 Tables\Actions\DeleteAction::make(),
                 Tables\Actions\ForceDeleteAction::make(),
                 Tables\Actions\RestoreAction::make(),
+                ])->color('info')
+                  ->icon('heroicon-s-cog-6-tooth')
+                  ->tooltip('Acciones')
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
