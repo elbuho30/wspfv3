@@ -12,6 +12,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
 
 class UserResource extends Resource
 {
@@ -29,14 +30,17 @@ class UserResource extends Resource
         return $form
             ->schema([
                 Forms\Components\TextInput::make('name')
+                    ->label('Usuario')
                     ->required()
-                    ->maxLength(255),
+                    ->maxLength(100),
                 Forms\Components\TextInput::make('email')
                     ->email()
                     ->required()
-                    ->maxLength(255),
-                Forms\Components\DateTimePicker::make('email_verified_at'),
+                    ->maxLength(100),
+                Forms\Components\DateTimePicker::make('email_verified_at')
+                    ->label('Fecha Verificación'),
                 Forms\Components\TextInput::make('password')
+             ->label('Contraseña')
                     ->password()
                     ->required()
                     ->maxLength(255),
@@ -54,24 +58,25 @@ class UserResource extends Resource
                 Tables\Columns\TextColumn::make('email_verified_at')
                     ->dateTime()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('created_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
                 //
             ])
             ->actions([
+                Tables\Actions\ActionGroup::make([
+                Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
+  Tables\Actions\DeleteAction::make(),
+                Tables\Actions\ForceDeleteAction::make(),
+                Tables\Actions\RestoreAction::make(),
+                ])->color('info')
+                  ->icon('heroicon-s-cog-6-tooth')
+                  ->tooltip('Acciones')
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                Tables\Actions\DeleteBulkAction::make(),
+                ExportBulkAction::make()->label('Exportar a Excel'),
                 ]),
             ])
             ->emptyStateActions([

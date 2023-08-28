@@ -2,30 +2,32 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\DepartamentoResource\Pages;
-use App\Filament\Resources\DepartamentoResource\RelationManagers;
-use App\Models\Departamento;
+use App\Filament\Resources\CiudadResource\Pages;
+use App\Filament\Resources\CiudadResource\RelationManagers;
+use App\Models\Ciudad;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
+use Filament\Support\Enums\IconPosition;
+use Filament\Support\Enums\FontWeight;
 use Filament\Tables\Actions\ReplicateAction;
-use Filament\Tables\Filters\SelectFilter;
 
-class DepartamentoResource extends Resource
+class CiudadResource extends Resource
 {
-    protected static ?string $model = Departamento::class;
+    protected static ?string $model = Ciudad::class;
 
-    protected static ?string $modelLabel ='Departamento';
+    protected static ?string $modelLabel ='Ciudad';
     protected static ?string $navigationGroup = 'Maestros';
-    protected static ?string $navigationIcon = 'feathericon-map';
-    protected static ?string $navigationLabel = 'Departamentos';
+    protected static ?string $navigationIcon = 'feathericon-map-pin';
+    protected static ?string $navigationLabel = 'Ciudades';
     protected static ?int $navigationSort = 2;
-    protected static ?string $pluralModelLabel ='Departamentos';
+    protected static ?string $pluralModelLabel ='Ciudades';
 
     public static function form(Form $form): Form
     {
@@ -34,9 +36,8 @@ class DepartamentoResource extends Resource
                 Forms\Components\TextInput::make('nombre')
                     ->required()
                     ->maxLength(100),
-                Forms\Components\Select::make('pais_id')
-                    ->relationship(name: 'pais', titleAttribute: 'nombre')
-                    ->label('País'),
+                Forms\Components\Select::make('departamento_id')
+                    ->relationship(name: 'departamento', titleAttribute: 'nombre'),
                 Forms\Components\Hidden::make('user_id')
                     ->default(Auth()->user()->id)
                     ->required(),
@@ -49,28 +50,27 @@ class DepartamentoResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-            ->columns([              
+            ->columns([
                 Tables\Columns\TextColumn::make('nombre')
-                    ->label('Departamento')
-                    ->sortable()    
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('pais.nombre')
+                    ->label('Ciudad')
                     ->sortable()
-                    ->searchable()
-                    ->label('País'),
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('departamento.nombre')
+                    ->label('Departamento')
+                    ->sortable()
+                    ->searchable(),                                
                 Tables\Columns\IconColumn::make('estado')
                     ->sortable()
-                    ->searchable()
                     ->boolean(),
                 Tables\Columns\TextColumn::make('user.name')
+                    ->label('Usuario')
                     ->sortable()
-                    ->searchable()
-                    ->label('Usuario'),
+                    ->searchable(),
             ])
             ->filters([
-                SelectFilter::make('pais_id')
-                    ->relationship('pais', 'nombre')
-                    ->label('País'),
+                SelectFilter::make('departamento_id')
+                    ->relationship('departamento', 'nombre')
+                    ->label('Departamento'),
                 SelectFilter::make('estado')
                     ->options([
                         '1' => 'Activo',
@@ -111,15 +111,15 @@ class DepartamentoResource extends Resource
         return [
             //
         ];
-    }      
+    }
     
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListDepartamentos::route('/'),
-            'create' => Pages\CreateDepartamento::route('/create'),
-            'view' => Pages\ViewDepartamento::route('/{record}'),
-            'edit' => Pages\EditDepartamento::route('/{record}/edit'),
+            'index' => Pages\ListCiudads::route('/'),
+            'create' => Pages\CreateCiudad::route('/create'),
+            'view' => Pages\ViewCiudad::route('/{record}'),
+            'edit' => Pages\EditCiudad::route('/{record}/edit'),
         ];
     }    
 }

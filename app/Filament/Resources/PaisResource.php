@@ -10,6 +10,7 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
@@ -32,18 +33,24 @@ class PaisResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('user_id')
-                    ->required()
-                    ->numeric(),
                 Forms\Components\TextInput::make('nombre')
                     ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('abreviatura')
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('id_int_call')
-                    ->maxLength(255),
-                Forms\Components\Toggle::make('estado')
+                    ->maxLength(100)
                     ->required(),
+                Forms\Components\TextInput::make('abreviatura')
+                    ->maxLength(3)
+                    ->required(),
+                Forms\Components\TextInput::make('id_int_call')
+                    ->label('Cód. Int. Llamadas')
+                    ->maxLength(3)
+                    ->numeric()
+                    ->required(),
+                Forms\Components\Hidden::make('user_id')
+                    ->default(Auth()->user()->id)
+                    ->required(),
+                Forms\Components\Toggle::make('estado')
+                    ->required()
+                    ->default(1),
             ]);
     }
 
@@ -51,7 +58,8 @@ class PaisResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('nombre')->label('País')
+                Tables\Columns\TextColumn::make('nombre')
+                    ->label('País')
                     ->sortable()
                     ->copyable()
                     ->copyMessage('Nombre copiado')
@@ -64,7 +72,8 @@ class PaisResource extends Resource
                     ->icon('heroicon-m-flag')
                     //->iconPosition(IconPosition::After)
                     ->weight(FontWeight::Bold),
-                Tables\Columns\TextColumn::make('id_int_call')->label('Código Llamadas')
+                Tables\Columns\TextColumn::make('id_int_call')
+                    ->label('Cód. Int. Llamadas')
                     ->sortable()
                     ->searchable(),
                 Tables\Columns\IconColumn::make('estado')
@@ -72,10 +81,20 @@ class PaisResource extends Resource
                     ->boolean(),
                 Tables\Columns\TextColumn::make('user.name')
                     ->numeric()
-                    ->sortable()->label('Usuario'),
+                    ->sortable()
+                    ->searchable()
+                    ->label('Usuario'),
             ])
             ->filters([
-                //
+                SelectFilter::make('estado')
+                    ->options([
+                        '1' => 'Activo',
+                        '0' => 'Inactivo',
+                    ])
+                    ->label('Estado'),
+                SelectFilter::make('user_id')
+                    ->relationship('user', 'name')
+                    ->label('Usuario')
             ])
             ->actions([
                 Tables\Actions\ActionGroup::make([
@@ -83,7 +102,9 @@ class PaisResource extends Resource
                 Tables\Actions\EditAction::make(),
                 /* These lines of code are defining the actions that can be performed on each record in
                 the table. */
-                ReplicateAction::make()->label('Clonar')->successNotificationTitle('Registro clonado'),
+                ReplicateAction::make()
+                    ->label('Clonar')
+                    ->successNotificationTitle('Registro clonado'),
                 Tables\Actions\DeleteAction::make(),
                 Tables\Actions\ForceDeleteAction::make(),
                 Tables\Actions\RestoreAction::make(),
