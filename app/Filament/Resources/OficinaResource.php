@@ -10,6 +10,7 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Tables\Actions\ReplicateAction;
@@ -76,6 +77,10 @@ class OficinaResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('direccion2')
                     ->searchable(),
+                Tables\Columns\TextColumn::make('ciudad.departamento.nombre')
+                    ->label('Departamento')
+                    ->sortable()
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('ciudad.nombre')
                     ->label('Ciudad')
                     ->sortable()
@@ -105,7 +110,9 @@ class OficinaResource extends Resource
                     ->searchable(),
             ])
             ->filters([
-                //
+                SelectFilter::make('ciudad_id')
+                ->relationship('ciudad', 'nombre')
+                ->label('Ciudad')
             ])
             ->actions([
                 Tables\Actions\ActionGroup::make([
