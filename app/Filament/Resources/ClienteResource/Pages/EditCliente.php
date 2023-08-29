@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Filament\Resources\CiudadResource\Pages;
+namespace App\Filament\Resources\ClienteResource\Pages;
 
-use App\Filament\Resources\CiudadResource;
+use App\Filament\Resources\ClienteResource;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
 
-class EditCiudad extends EditRecord
+class EditCliente extends EditRecord
 {
-    protected static string $resource = CiudadResource::class;
+    protected static string $resource = ClienteResource::class;
 
     protected function getRedirectUrl(): string
     {

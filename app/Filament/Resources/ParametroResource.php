@@ -30,6 +30,7 @@ class ParametroResource extends Resource
         return $form
             ->schema([
                 Forms\Components\TextInput::make('nit')
+                    ->numeric()
                     ->required()
                     ->maxLength(20),
                 Forms\Components\TextInput::make('razon_social')

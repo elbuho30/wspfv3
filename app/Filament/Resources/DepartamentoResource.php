@@ -24,7 +24,7 @@ class DepartamentoResource extends Resource
     protected static ?string $navigationGroup = 'Maestros';
     protected static ?string $navigationIcon = 'feathericon-map';
     protected static ?string $navigationLabel = 'Departamentos';
-    protected static ?int $navigationSort = 2;
+    protected static ?int $navigationSort = 3;
     protected static ?string $pluralModelLabel ='Departamentos';
 
     public static function form(Form $form): Form
