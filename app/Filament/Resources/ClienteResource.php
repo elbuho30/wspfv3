@@ -5,16 +5,21 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\ClienteResource\Pages;
 use App\Filament\Resources\ClienteResource\RelationManagers;
 use App\Models\Cliente;
+use App\Models\Departamento;
+use App\Models\Ciudad;
 use Filament\Forms;
+use Filament\Forms\Get;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Filament\Tables\Filters\SelectFilter;
+use Filament\Tables\Enums\FiltersLayout;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Tables\Actions\ReplicateAction;
 use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
+use Illuminate\Support\Collection;
 
 class ClienteResource extends Resource
 {
@@ -31,6 +36,18 @@ class ClienteResource extends Resource
     protected static ?string $navigationLabel = 'Clientes';
     protected static ?int $navigationSort = 1;
     protected static ?string $pluralModelLabel ='Clientes';
+
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::where('estado','=',1)->count();
+    }
+
+    public static function getNavigationBadgeColor(): ?string
+    {
+        return static::getModel()::where('estado','=','1')->count() < 1
+        ? 'warning'
+        : 'green';
+    }
 
     public static function form(Form $form): Form
     {
@@ -57,9 +74,19 @@ class ClienteResource extends Resource
                 Forms\Components\TextInput::make('direccion')
                     ->label('Dirección')
                     ->maxLength(255),
+
+                Forms\Components\Select::make('departamento')
+                    ->options(Departamento::query()->pluck('nombre', 'id'))
+                    ->live(),
                 Forms\Components\Select::make('ciudad_id')
-                    ->relationship(name: 'ciudad', titleAttribute: 'nombre'),
-                Forms\Components\Toggle::make('estado')
+                    ->options(fn (Get $get): Collection => Ciudad::query()
+                        ->where('departamento_id', $get('departamento'))
+                        ->pluck('nombre', 'id')),
+
+                // Forms\Components\Select::make('ciudad_id')
+                //     ->relationship(name: 'ciudad', titleAttribute: 'nombre'),
+                
+                    Forms\Components\Toggle::make('estado')
                     ->required()
                     ->default(1), 
                 Forms\Components\Hidden::make('user_id')
@@ -94,17 +121,24 @@ class ClienteResource extends Resource
                     ->label('Ciudad')
                     ->sortable()
                     ->searchable(),
-                Tables\Columns\IconColumn::make('estado')
-                    ->boolean(),
+                // Tables\Columns\IconColumn::make('estado')
+                //     ->boolean(), // estado como ícono
+                Tables\Columns\ToggleColumn::make('estado'), // estado como interruptor
                 Tables\Columns\TextColumn::make('user.name')
                     ->label('Usuario')
                     ->sortable()
-                    ->searchable(),
+                    ->searchable()
+                    ->toggleable() //permite ocultar o mostrar
+                    ->extraAttributes(['class' => 'bg-gray-200']), // adicionar color de fondo
             ])
             ->filters([
                 SelectFilter::make('ciudad_id')
                     ->relationship('ciudad', 'nombre')
                     ->label('Ciudad'),
+            
+                // SelectFilter::make('departamento')
+                //         ->relationship('ciudad.departamento', 'nombre')
+                //         ->label('Departamento'),
 
                 SelectFilter::make('estado')
                     ->options([
@@ -116,7 +150,13 @@ class ClienteResource extends Resource
                 SelectFilter::make('user_id')
                     ->relationship('user', 'name')
                     ->label('Usuario'),
-            ])
+            ] //, layout: FiltersLayout::AboveContent // filtro arriba del listado
+             //, layout: FiltersLayout::AboveContentCollapsible // filtro arriba del listado pero contraido
+             , layout: FiltersLayout::BelowContent // filtro debajo del listado
+             )
+            ->filtersFormColumns(3) // cantidad de filtros por linea
+            ->filtersFormMaxHeight('400px') //alto maximo del filtro cuando es selector
+            ->persistFiltersInSession() // mantener filtros en la sesión del usuario
             ->actions([
                 Tables\Actions\ActionGroup::make([
                 Tables\Actions\ViewAction::make(),

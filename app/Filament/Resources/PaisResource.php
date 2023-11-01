@@ -29,6 +29,11 @@ class PaisResource extends Resource
     protected static ?int $navigationSort = 3;
     protected static ?string $pluralModelLabel ='Países';
 
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
+    }
+    
     public static function form(Form $form): Form
     {
         return $form
