@@ -5,21 +5,28 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\UserResource\Pages;
 use App\Filament\Resources\UserResource\RelationManagers;
 use App\Models\User;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Select;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Forms\Components\MultiSelect;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Filament\Tables\Columns\TagsColumn;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
+use Filament\Tables\Filters\Filter;
+use Illuminate\Database\Eloquent\Model;
 
 class UserResource extends Resource
 {
     protected static ?string $model = User::class;
 
     protected static ?string $modelLabel ='Usuario';
-    protected static ?string $navigationGroup = 'Seguridad';
+    protected static ?string $navigationGroup = 'Filament Shield';
     protected static ?string $navigationIcon = 'heroicon-o-users';
     protected static ?string $navigationLabel = 'Usuarios';
     protected static ?int $navigationSort = 5;
@@ -34,21 +41,52 @@ class UserResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('name')
-                    ->label('Usuario')
+                TextInput::make('name')
+                    ->label('Nombre')
                     ->required()
                     ->maxLength(100),
-                Forms\Components\TextInput::make('email')
+                TextInput::make('email')
                     ->email()
                     ->required()
                     ->maxLength(100),
-                Forms\Components\DateTimePicker::make('email_verified_at')
-                    ->label('Fecha Verificación'),
-                Forms\Components\TextInput::make('password')
-             ->label('Contraseña')
+                // Forms\Components\DateTimePicker::make('email_verified_at')
+                //     ->label('Fecha Verificación'),
+                TextInput::make('password')
+                    ->label('Contraseña')
                     ->password()
                     ->required()
-                    ->maxLength(255),
+                    ->maxLength(255)
+                    ->minLength(8)
+                ->same('passwordConfirmation')
+                ->dehydrateStateUsing(fn($state) => bcrypt($state))
+                ->hidden(function (?Model $record) {
+                    return $record;
+                }),
+                TextInput::make('passwordConfirmation')
+                ->label('Confirmar contraseña')
+                ->password()
+                ->required()
+                ->minLength(8)
+                ->dehydrateStateUsing(fn($state) => bcrypt($state))
+                ->hidden(function (?Model $record) {
+                    return $record;
+                }),
+                MultiSelect::make('roles')
+                            ->required()
+                            ->label('Roles')
+                            ->relationship('roles', 'name')
+                            ->preload(),
+                MultiSelect::make('permissions')
+                            ->required()
+                            ->label('Permisos')
+                            ->relationship('permissions', 'name')
+                            ->preload(),
+
+                Select::make('oficina_id')
+                ->required()
+                ->label('Oficina')
+                ->relationship('oficina', 'nombre')
+                ->preload()
             ]);
     }
 
@@ -56,13 +94,16 @@ class UserResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('name')
+                TextColumn::make('name')
+                    ->label('Nombre')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('email')
+                TextColumn::make('email')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('email_verified_at')
-                    ->dateTime()
-                    ->sortable(),
+                TagsColumn::make('roles.name')->label('Roles')
+                    ->separator('-'),
+    
+                TextColumn::make('oficina.nombre')
+                    ->label('Oficina'),
             ])
             ->filters([
                 //

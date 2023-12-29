@@ -53,16 +53,31 @@ class ClienteResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('nro_documento')
-                    ->numeric()
-                    ->required()
-                    ->maxLength(20),
-                Forms\Components\TextInput::make('nombres')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('apellidos')
-                    ->required()
-                    ->maxLength(255),
+                Forms\Components\Section::make('Datos Personales')
+                    ->description('Datos personales del cliente')
+                    ->schema([
+                        Forms\Components\TextInput::make('nro_documento')
+                            ->label('Nro. Documento')
+                            ->numeric()
+                            ->required()
+                            ->maxLength(20),
+                        Forms\Components\TextInput::make('nombres')
+                            ->required()
+                            ->maxLength(255),
+                        Forms\Components\TextInput::make('apellidos')
+                            ->required()
+                            ->maxLength(255),
+            ])->columnSpan(2)
+            ->columns([
+                // 'default' =>3,
+                'md' =>2,
+                'lg' => 3,
+                'xl' =>3,
+            ])
+            ->collapsible(),
+            Forms\Components\Section::make('Datos Contacto')
+            ->description('Datos de contacto')
+            ->schema([
                 Forms\Components\TextInput::make('celular')
                     ->tel()
                     ->required()
@@ -71,28 +86,33 @@ class ClienteResource extends Resource
                     ->email()
                     ->required()
                     ->maxLength(100),
+            ])->columnSpan(1)->columns(2),
+            Forms\Components\Section::make('Datos Ubicación')
+                        ->description('Datos de ubicación')
+                        ->schema([
                 Forms\Components\TextInput::make('direccion')
                     ->label('Dirección')
-                    ->maxLength(255),
-
+                    ->maxLength(255)
+                    ->columnSpan(2),
                 Forms\Components\Select::make('departamento')
+                    ->label('Departamento')
                     ->options(Departamento::query()->pluck('nombre', 'id'))
                     ->live(),
                 Forms\Components\Select::make('ciudad_id')
+                    ->label('Ciudad')
                     ->options(fn (Get $get): Collection => Ciudad::query()
                         ->where('departamento_id', $get('departamento'))
                         ->pluck('nombre', 'id')),
-
-                // Forms\Components\Select::make('ciudad_id')
-                //     ->relationship(name: 'ciudad', titleAttribute: 'nombre'),
-                
+                        // Forms\Components\Select::make('ciudad_id')
+                        //     ->relationship(name: 'ciudad', titleAttribute: 'nombre'),
+             ])->columns(3),
                     Forms\Components\Toggle::make('estado')
                     ->required()
                     ->default(1), 
                 Forms\Components\Hidden::make('user_id')
                     ->default(Auth()->user()->id)
                     ->required(),
-            ]);
+            ])->columns(3);
     }
 
     public static function table(Table $table): Table
