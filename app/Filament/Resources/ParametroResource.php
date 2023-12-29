@@ -22,7 +22,7 @@ class ParametroResource extends Resource
     protected static ?string $navigationGroup = 'Entidad';
     protected static ?string $navigationIcon = 'feathericon-tool';
     protected static ?string $navigationLabel = 'Parámetros';
-    protected static ?int $navigationSort = 2;
+    protected static ?int $navigationSort = 3;
     protected static ?string $pluralModelLabel ='Parámetros';
 
     public static function getNavigationBadge(): ?string

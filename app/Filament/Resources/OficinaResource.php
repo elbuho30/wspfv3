@@ -24,7 +24,7 @@ class OficinaResource extends Resource
     protected static ?string $navigationGroup = 'Entidad';
     protected static ?string $navigationIcon = 'heroicon-o-building-office-2';
     protected static ?string $navigationLabel = 'Oficinas';
-    protected static ?int $navigationSort = 2;
+    protected static ?int $navigationSort = 3;
     protected static ?string $pluralModelLabel ='Oficinas';
 
     public static function getNavigationBadge(): ?string

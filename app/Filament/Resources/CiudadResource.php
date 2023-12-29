@@ -26,7 +26,7 @@ class CiudadResource extends Resource
     protected static ?string $navigationGroup = 'Maestros';
     protected static ?string $navigationIcon = 'feathericon-map-pin';
     protected static ?string $navigationLabel = 'Ciudades';
-    protected static ?int $navigationSort = 3;
+    protected static ?int $navigationSort = 4;
     protected static ?string $pluralModelLabel ='Ciudades';
 
     public static function getNavigationBadge(): ?string
