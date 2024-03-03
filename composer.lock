@@ -4,7 +4,11 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
+<<<<<<< HEAD
     "content-hash": "fde429a48c49a645fce59878e49ef2e9",
+=======
+    "content-hash": "282d6ccf64e3f9ebcf9ab4e5218dc08a",
+>>>>>>> 8d73ecbb4e8719815eafa6ee5d0230be08bc5152
     "packages": [
         {
             "name": "abanoubnassem/filament-grecaptcha-field",
@@ -6039,6 +6043,7 @@
             "time": "2023-08-09T14:08:04+00:00"
         },
         {
+<<<<<<< HEAD
             "name": "spatie/laravel-permission",
             "version": "6.4.0",
             "source": {
@@ -6121,6 +6126,8 @@
             "time": "2024-02-28T08:11:20+00:00"
         },
         {
+=======
+>>>>>>> 8d73ecbb4e8719815eafa6ee5d0230be08bc5152
             "name": "spatie/regex",
             "version": "3.1.1",
             "source": {
