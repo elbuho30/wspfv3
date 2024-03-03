@@ -55,7 +55,7 @@ return [
     |
     */
 
-    'url' => env('APP_URL', 'https://wspf.wsplataform.com'),
+    'url' => env('APP_URL', 'http://intgsdin.com'),
 
     'asset_url' => env('ASSET_URL'),
 
