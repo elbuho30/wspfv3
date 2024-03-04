@@ -76,7 +76,7 @@
             "pestphp/pest-plugin": true,
             "php-http/discovery": true
         },
-        "cache-dir": "/home/wsplsdkk/wspf.wsplataform.com/cache"
+        "cache-dir": "/cache"
     },
     "minimum-stability": "dev",
     "prefer-stable": true

@@ -7,40 +7,28 @@ use Filament\Facades\Filament;
 use Filament\Http\Responses\Auth\Contracts\LoginResponse;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Notifications\Notification;
-use Filament\Pages\Auth\Login as LoginBase;
+use Filament\Pages\Auth\Login as BaseAuth;
 use Illuminate\Support\Facades\Auth;
+use Filament\Forms\Form;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Component;
 use Illuminate\Validation\ValidationException;
 use AbanoubNassem\FilamentGRecaptchaField\Forms\Components\GRecaptcha;
 
-class Login extends LoginBase
+class Login extends BaseAuth
 {
 
-    protected function getForms(): array
+    public function form(Form $form): Form
     {
-        return [
-            'form' => $this->form(
-                $this->makeForm()
-                    ->schema([
-                        $this->getDocumentFormComponent(),
+        return $form
+             ->schema([
+                        $this->getEmailFormComponent(),
                         $this->getPasswordFormComponent(),
                         $this->getCaptchaFormComponent(),
                         $this->getRememberFormComponent(),
                     ])
-                    ->statePath('data'),
-            ),
-        ];
-    }
+                    ->statePath('data');
 
-    protected function getDocumentFormComponent(): Component
-    {
-        return TextInput::make('nro_documento')
-            ->label('Documento')
-            ->required()
-            ->autofocus()
-            ->autocomplete()
-            ->extraInputAttributes(['tabindex' => 1]);
     }
 
     protected function getCaptchaFormComponent()
@@ -48,23 +36,5 @@ class Login extends LoginBase
         return GRecaptcha::make('g-recaptcha');
     }
 
-    /**
-     * @param  array<string, mixed>  $data
-     * @return array<string, mixed>
-     */
-    protected function getCredentialsFromFormData(array $data): array
-    {
-        return [
-            'nro_documento' => $data['nro_documento'],
-            'password' => $data['password'],
-        ];
-    }
-
-    protected function throwFailureValidationException(): never
-    {
-        throw ValidationException::withMessages([
-            'data.nro_documento' => __('filament-panels::pages/auth/login.messages.failed'),
-        ]);
-    }
     
 }
