@@ -71,6 +71,7 @@ class ParametroResource extends Resource
                 Forms\Components\TextInput::make('token_webhook')
                     ->maxLength(255),
                 Forms\Components\TextInput::make('puerto')
+                    ->label('Puerto servicio')
                     ->required(),
                 Forms\Components\Toggle::make('estado')
                     ->required()
