@@ -77,7 +77,6 @@ class UserResource extends Resource
                             ->relationship('roles', 'name')
                             ->preload(),
                 MultiSelect::make('permissions')
-                            ->required()
                             ->label('Permisos')
                             ->relationship('permissions', 'name')
                             ->preload(),

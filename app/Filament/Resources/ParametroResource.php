@@ -72,7 +72,28 @@ class ParametroResource extends Resource
                     ->maxLength(255),
                 Forms\Components\TextInput::make('puerto')
                     ->label('Puerto servicio')
+                    ->numeric()
                     ->required(),
+                Forms\Components\TextInput::make('host_ftp')
+                    ->maxLength(200),
+                Forms\Components\TextInput::make('port_ftp')
+                    ->numeric()
+                    ->maxLength(20),
+                Forms\Components\TextInput::make('user_ftp')
+                    ->maxLength(100),
+                Forms\Components\TextInput::make('pass_ftp')
+                    ->password()
+                    ->maxLength(100),
+                    Forms\Components\TextInput::make('host_db')
+                    ->maxLength(200),
+                Forms\Components\TextInput::make('port_db')
+                    ->numeric()
+                    ->maxLength(20),
+                Forms\Components\TextInput::make('user_db')
+                    ->maxLength(100),
+                Forms\Components\TextInput::make('pass_db')
+                    ->password()
+                    ->maxLength(100),
                 Forms\Components\Toggle::make('estado')
                     ->required()
                     ->default(1),                   
@@ -90,12 +111,15 @@ class ParametroResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('razon_social')
                     ->label('Razón Social')
+                    ->limit(30)
                     ->searchable(),
                 Tables\Columns\TextColumn::make('sigla')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('descripcion')
                     ->label('Descripción')
                     ->toggleable(isToggledHiddenByDefault: true)
+                    //->limit(50)
+                    ->words(6)
                     ->searchable(),
                 Tables\Columns\TextColumn::make('direccion')
                     ->label('Dirección')
@@ -124,6 +148,8 @@ class ParametroResource extends Resource
                 ->toggleable(isToggledHiddenByDefault: true)
                     ->searchable(),
                 Tables\Columns\TextColumn::make('puerto')
+                    ->label('Puerto servicio')
+                    ->toggleable(isToggledHiddenByDefault: true)
                     ->sortable()
                     ->searchable(),
                 Tables\Columns\IconColumn::make('estado')
